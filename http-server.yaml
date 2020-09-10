@@ -14,6 +14,10 @@ services:
         traefik.http.routers.https-server.entrypoints: https
         traefik.http.routers.https-server.tls.certresolver: letsencrypt
         traefik.http.routers.https-server.rule: Host(`smartdev.cloud`)
+        swarmpit.service.deployment.autoredeploy: 'true'
+      update_config:
+        order: start-first
+        failure_action: rollback
 networks:
   proxy:
     external: true
