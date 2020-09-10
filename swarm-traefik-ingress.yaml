@@ -1,9 +1,5 @@
 version: '3.4'
 
-secrets:
-  cf_api_key:
-    file: ./api_key.secret
-
 services:
   traefik:
     image: traefik:v2.2
@@ -17,8 +13,7 @@ services:
      - --providers.docker.watch=true
      - --entrypoints.http.address=:80
      - --entrypoints.https.address=:443
-     - --certificatesresolvers.letsencrypt.acme.dnschallenge=true
-     - --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare
+     - --certificatesresolvers.letsencrypt.acme.httpChallenge=http
      - --certificatesresolvers.letsencrypt.acme.email=keszi000@gmail.com
      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
     ports:
@@ -27,11 +22,6 @@ services:
     volumes:
      - letsencrypt:/letsencrypt
      - /var/run/docker.sock:/var/run/docker.sock
-    secrets:
-     - cf_api_key
-    environment:
-      CF_API_EMAIL: keszi000@gmail.com
-      CF_API_KEY_FILE: /run/secrets/cf_api_key
     networks:
       - proxy
     deploy:
