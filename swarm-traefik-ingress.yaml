@@ -21,7 +21,7 @@ services:
      - --providers.docker.watch=true
      - --entrypoints.http.address=:80
      - --entrypoints.https.address=:443
-     - --certificatesresolvers.letsencrypt.acme.httpChallenge=http
+     - --certificatesresolvers.letsencrypt.acme.httpChallenge.entrypoint=http
      - --certificatesresolvers.letsencrypt.acme.email=keszi000@gmail.com
      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
     deploy:
