@@ -1,0 +1,54 @@
+#Swarm Cluster init
+docker swarm init
+—— join command —-
+
+#Swarm node-ok ellenőrzése
+docker node ls
+
+#git repo clone
+git clone https://github.com/keszi000/docker-swarm-demo.git
+cd docker-swarm-demo
+
+#proxy (ingress network létrehozása)
+cat swarm-traefik-ingress.yaml
+docker network create -d overlay proxy
+
+docker network ls
+
+docker stack deploy ingress -c swarm-traefik-ingress.yaml
+
+docker stack ls
+docker service ls
+
+#Nézzük meg a http://smartdev.cloud:8080 comet
+
+
+#swarmpit installer
+docker run -it --rm \
+  --name swarmpit-installer \
+  --volume /var/run/docker.sock:/var/run/docker.sock \
+swarmpit/install:1.9
+
+
+#docker registry telepítése
+docker stack deploy registry -c registry.yaml
+
+#Ellenőrzése
+docker service ls
+
+
+cd http-server
+cat Dockerfile
+docker build -t registry.smartdev.cloud/http-server:latest .
+docker push registry.smartdev.cloud/http-server:latest
+
+
+cd ..
+cat http-server.yaml
+docker stack deploy server -c http-server.yaml
+
+#Beállítani a registry-t; updatelni a service-t
+
+cd http-server-new
+docker build --no-cache -t registry.smartdev.cloud/http-server:latest .
+docker push registry.smartdev.cloud/http-server:latest
