@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  registry:
+    image: registry:2
+    networks:
+      - proxy
+    deploy:
+      labels:
+        traefik.enable: 'true'
+        traefik.http.services.registry.loadbalancer.server.port: '5000'
+        traefik.http.routers.registry-https.entrypoints: https
+        traefik.http.routers.registry-https.tls.certresolver: letsencrypt
+        traefik.http.routers.registry-https.rule: Host(`registry.smartdev.cloud`)
+networks:
+  proxy:
+    external: true
