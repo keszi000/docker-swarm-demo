@@ -1,5 +1,5 @@
     networks:
-     - ingress
+     - proxy
     deploy:
       labels:
         traefik.enable: 'true'
@@ -8,7 +8,7 @@
         traefik.http.routers.swarmpit-https.tls.certresolver: letsencrypt
         traefik.http.services.swarmpit.loadbalancer.server.port: '8080'
 networks:
-  ingress:
+  proxy:
     external: true
 volumes:
   db-data:

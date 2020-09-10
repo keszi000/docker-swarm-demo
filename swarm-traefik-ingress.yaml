@@ -10,14 +10,14 @@ services:
      - letsencrypt:/letsencrypt
      - /var/run/docker.sock:/var/run/docker.sock
     networks:
-      - ingress
+      - proxy
     command:
      - --api.insecure=true
      - --api.dashboard=true
      - --providers.docker=true
      - --providers.docker.swarmMode=true
      - --providers.docker.exposedbydefault=false
-     - --providers.docker.network=ingress
+     - --providers.docker.network=proxy
      - --providers.docker.watch=true
      - --entrypoints.http.address=:80
      - --entrypoints.https.address=:443
@@ -37,7 +37,7 @@ services:
         traefik.http.routers.traefik-https.tls.certresolver: letsencrypt
         traefik.http.routers.traefik-https.rule: Host(`traefik.smartdev.cloud`)
 networks:
-  ingress:
+  proxy:
     external: true
 volumes:
   letsencrypt:
