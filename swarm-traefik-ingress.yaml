@@ -1,0 +1,54 @@
+version: '3.4'
+
+secrets:
+  cf_api_key:
+    file: ./api_key.secret
+
+services:
+  traefik:
+    image: traefik:v2.2
+    command:
+     - --api.insecure=true
+     - --api.dashboard=true
+     - --providers.docker=true
+     - --providers.docker.swarmMode=true
+     - --providers.docker.exposedbydefault=false
+     - --providers.docker.network=proxy
+     - --providers.docker.watch=true
+     - --entrypoints.http.address=:80
+     - --entrypoints.https.address=:443
+     - --certificatesresolvers.letsencrypt.acme.dnschallenge=true
+     - --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare
+     - --certificatesresolvers.letsencrypt.acme.email=keszi000@gmail.com
+     - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+    ports:
+     - 80:80
+     - 443:443
+    volumes:
+     - letsencrypt:/letsencrypt
+     - /var/run/docker.sock:/var/run/docker.sock
+    secrets:
+     - cf_api_key
+    environment:
+      CF_API_EMAIL: keszi000@gmail.com
+      CF_API_KEY_FILE: /run/secrets/cf_api_key
+    networks:
+      - proxy
+    deploy:
+      labels:
+        traefik.enable: 'true'
+        traefik.http.routers.http-catchall.entrypoints: https
+        traefik.http.middlewares.redirect-to-https.redirectscheme.permanent: 'true'
+        traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: https
+        traefik.http.routers.http-catchall.middlewares: redirect-to-https
+        traefik.http.routers.http-catchall.rule: hostregexp(`{host:[a-z-.]+}`)
+        traefik.http.services.traefik.loadbalancer.server.port: '8080'
+        traefik.http.routers.traefik-https.entrypoints: https
+        traefik.http.routers.traefik-https.tls.certresolver: letsencrypt
+        traefik.http.routers.traefik-https.rule: Host(`traefik.smartdev.cloud`)
+networks:
+  proxy:
+    external: true
+volumes:
+  letsencrypt:
+    driver: local
