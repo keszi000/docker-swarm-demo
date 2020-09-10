@@ -6,6 +6,7 @@ services:
     ports:
      - 80:80
      - 443:443
+     - 8080:8080
     volumes:
      - letsencrypt:/letsencrypt
      - /var/run/docker.sock:/var/run/docker.sock
@@ -24,15 +25,6 @@ services:
      - --certificatesresolvers.letsencrypt.acme.httpChallenge.entrypoint=http
      - --certificatesresolvers.letsencrypt.acme.email=keszi000@gmail.com
      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
-    deploy:
-      labels:
-        traefik.enable: 'true'
-        traefik.http.services.traefik.loadbalancer.server.port: '8080'
-        traefik.http.routers.traefik-http.entrypoints: http
-        traefik.http.routers.traefik-http.rule: Host(`traefik.smartdev.cloud`)
-        traefik.http.routers.traefik-https.entrypoints: https
-        traefik.http.routers.traefik-https.tls.certresolver: letsencrypt
-        traefik.http.routers.traefik-https.rule: Host(`traefik.smartdev.cloud`)
 networks:
   proxy:
     external: true
