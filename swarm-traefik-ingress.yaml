@@ -3,6 +3,14 @@ version: '3.4'
 services:
   traefik:
     image: traefik:v2.2
+    ports:
+     - 80:80
+     - 443:443
+    volumes:
+     - letsencrypt:/letsencrypt
+     - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - proxy
     command:
      - --api.insecure=true
      - --api.dashboard=true
@@ -16,18 +24,10 @@ services:
      - --certificatesresolvers.letsencrypt.acme.httpChallenge=http
      - --certificatesresolvers.letsencrypt.acme.email=keszi000@gmail.com
      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
-    ports:
-     - 80:80
-     - 443:443
-    volumes:
-     - letsencrypt:/letsencrypt
-     - /var/run/docker.sock:/var/run/docker.sock
-    networks:
-      - proxy
     deploy:
       labels:
         traefik.enable: 'true'
-        traefik.http.routers.http-catchall.entrypoints: https
+        traefik.http.routers.http-catchall.entrypoints: http
         traefik.http.middlewares.redirect-to-https.redirectscheme.permanent: 'true'
         traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: https
         traefik.http.routers.http-catchall.middlewares: redirect-to-https
