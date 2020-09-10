@@ -6,6 +6,9 @@
         traefik.http.services.swarmpit.loadbalancer.server.port: '8080'
         traefik.http.routers.swarmpit-http.entrypoints: http
         traefik.http.routers.swarmpit-http.rule: Host(`swarmpit.smartdev.cloud`)
+        traefik.http.routers.swarmpit-https.entrypoints: https
+        traefik.http.routers.swarmpit-https.rule: Host(`swarmpit.smartdev.cloud`)
+        traefik.http.routers.swarmpit-https.tls.certresolver: letsencrypt
 networks:
   proxy:
     external: true
