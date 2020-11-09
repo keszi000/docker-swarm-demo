@@ -6,6 +6,9 @@ services:
     networks:
       - proxy
     deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
       labels:
         traefik.enable: 'true'
         traefik.http.services.registry.loadbalancer.server.port: '5000'
