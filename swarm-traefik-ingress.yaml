@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   traefik:
-    image: traefik:v2.2
+    image: traefik:v2.3
     ports:
      - 80:80
      - 443:443
@@ -12,6 +12,10 @@ services:
      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - proxy
+    deploy:
+      placement:
+        constraints:
+          - "node.role==manager"
     command:
      - --api.insecure=true
      - --api.dashboard=true
